@@ -7,7 +7,7 @@ import { useUser } from "../../contexts/UserContext"; // ✅ Import user context
 const Login = () => {
   const navigate = useNavigate();
  
-  const { user, refreshUser } = useUser(); // ✅ Get user state
+  const { user } = useUser(); // ✅ Get user state
  
   // Redirect to dashboard if user is already logged in
   useEffect(() => {
@@ -34,7 +34,8 @@ const Login = () => {
  
       setTimeout(() => navigate("/jobs"), 1500); // ✅ Redirect after success
     } catch (error) {
-      setMessage({ text: "Invalid email or password. Please try again.", type: "error" });
+      console.error("Login failed:", error);
+      setMessage({ text: error.message, type: "error" });
     }
   };
  
