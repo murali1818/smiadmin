@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { account } from '../lib/appwrite';
-
+import { account } from '../appwriteConfig';
+ 
 const UserContext = createContext();
-
+ 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true); // Track loading state
 
+ 
     const refreshUser = async () => {
         setLoading(true);
         try {
@@ -19,6 +20,7 @@ export const UserProvider = ({ children }) => {
             setLoading(false);
         }
     };
+ 
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -32,16 +34,16 @@ export const UserProvider = ({ children }) => {
                 setLoading(false); // Set loading to false after fetching
             }
         };
-
+ 
         fetchUser();
         refreshUser();
     }, []);
-
+ 
     return (
         <UserContext.Provider value={{ user, setUser, loading, refreshUser }}>
             {children}
         </UserContext.Provider>
     );
 };
-
+ 
 export const useUser = () => useContext(UserContext);

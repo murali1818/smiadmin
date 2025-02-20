@@ -12,6 +12,7 @@ module.exports = {
         bgDark: "#141416",
         bgDark2: "#1a1a1c",
         borderLight: "#2c2c2e",
+        success: "#00ff00",
       },
     },
   },
