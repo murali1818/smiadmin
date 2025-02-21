@@ -1,64 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { databases, ID, account } from "../../appwriteConfig";
+import { CheckCircle } from "lucide-react";
 
 const AddJob = () => {
   const navigate = useNavigate();
+  const [currentUsername, setCurrentUsername] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // State to manage form inputs
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const user = await account.get();
+        setCurrentUsername(user.name);
+        console.log("Current User:", user.name);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    getUser();
+  }, []);
+
+
+
   const [job, setJob] = useState({
     jobTitle: "",
-    hiringUrl: "",
+    Vacancy: "",
     employmentType: "",
     organizationName: "",
     description: "",
     industry: "",
     qualifications: "",
-    responsibilities: "",
+    End_date: "",
     skills: "",
     workingHours: "",
     jobLocationType: "",
-    remoteLocation: "",
-    applicantLocation: "",
-    datePosted: "",
-    validThrough: "",
-    locality: "",
+    datePosted: new Date().toISOString(),
+    Location: "",
     salaryRange: "",
+    status: "Active",
+    postedBy: currentUsername,
   });
 
-  // Handle Input Change
   const handleChange = (e) => {
     setJob({ ...job, [e.target.name]: e.target.value });
   };
 
-  // Handle Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Job Posted:", job);
-    setJob({
-      jobTitle: "",
-      hiringUrl: "",
-      employmentType: "",
-      organizationName: "",
-      description: "",
-      industry: "",
-      qualifications: "",
-      responsibilities: "",
-      skills: "",
-      workingHours: "",
-      jobLocationType: "",
-      remoteLocation: "",
-      applicantLocation: "",
-      datePosted: "",
-      validThrough: "",
-      locality: "",
-      salaryRange: "",
-    });
+    try {
+      await databases.createDocument(
+        "67b6d0580007f3db3feb",
+        "67b6d0b30023f2b445b2",
+        ID.unique(),
+        { ...job, postedBy: currentUsername }
+      );
+      setShowConfirmation(true);
+      setTimeout(() => {
+        setShowConfirmation(false);
+        navigate("/jobs");
+      }, 3000);
+    } catch (error) {
+      console.error("Error Posting Job:", error);
+      alert("Failed to Post Job. Check console for details.");
+    }
   };
 
   return (
-    <div className="bg-bgDark  text-white flex flex-col items-center py-4">
+    <div className="bg-bgDark text-white flex flex-col items-center py-4">
+      {showConfirmation && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg">
+          <CheckCircle size={24} />
+          Job Posted Successfully!
+        </div>
+      )}
      
-     <h2 className="text-2xl font-semibold text-primary mb-2">Post a New Job</h2>
+      <h2 className="text-2xl font-semibold text-primary mb-2">Post a New Job</h2>
       <form onSubmit={handleSubmit} className="bg-bgDark2 p-4 rounded-lg shadow-md w-full max-w-6xl">
         
         {/* Job Information - 3 Columns */}
@@ -87,11 +104,11 @@ const AddJob = () => {
           </div>
 
           <div>
-            <label className="block text-sm mb-2"> Organization URL *</label>
+            <label className="block text-sm mb-2"> Vacancy *</label>
             <input
-              type="url"
-              name="hiringUrl"
-              value={job.hiringUrl}
+              type="text"
+              name="Vacancy"
+              value={job.Vacancy}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
               required
@@ -130,67 +147,73 @@ const AddJob = () => {
           
 
           <div>
-            <label className="block text-sm mb-2">Industry</label>
+            <label className="block text-sm mb-2">Industry*</label>
             <input
               type="text"
               name="industry"
               value={job.industry}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Qualifications</label>
+            <label className="block text-sm mb-2">Qualifications*</label>
             <input
               type="text"
               name="qualifications"
               value={job.qualifications}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Responsibilities</label>
+            <label className="block text-sm mb-2">End Date*</label>
             <input
-              type="text"
-              name="responsibilities"
-              value={job.responsibilities}
+              type="date"
+              name="End_date"
+              value={job.End_date}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Skills</label>
+            <label className="block text-sm mb-2">Skills*</label>
             <input
               type="text"
               name="skills"
               value={job.skills}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Working Hours</label>
+            <label className="block text-sm mb-2">Working Hours*</label>
             <input
               type="text"
               name="workingHours"
               value={job.workingHours}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Job Location Type</label>
+            <label className="block text-sm mb-2">Job Location Type*</label>
             <select
               name="jobLocationType"
               value={job.jobLocationType}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             >
               <option value="">Select</option>
               <option value="On-Site">On-Site</option>
@@ -200,11 +223,11 @@ const AddJob = () => {
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Locality *</label>
+            <label className="block text-sm mb-2">Location *</label>
             <input
               type="text"
-              name="locality"
-              value={job.locality}
+              name="Location"
+              value={job.Location}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
               required
@@ -212,22 +235,28 @@ const AddJob = () => {
           </div>
 
           <div>
-            <label className="block text-sm mb-2">Salary Range</label>
+            <label className="block text-sm mb-2">Salary Range*</label>
             <input
               type="text"
               name="salaryRange"
               value={job.salaryRange}
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
             />
           </div>
         </div>
 
         {/* Buttons */}
         <div className="flex justify-between mt-6">
-          <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md">
-            Post Job
+        <button
+            type="button"
+            onClick={() => navigate("/jobs")}
+            className="px-4 py-2 bg-borderLight text-white rounded-md"
+          >
+            Back to Jobs
           </button>
+          
           <button
             type="button"
             onClick={() => setJob({})}
@@ -235,13 +264,10 @@ const AddJob = () => {
           >
             Clear
           </button>
-          <button
-            type="button"
-            onClick={() => navigate("/jobs")}
-            className="px-4 py-2 bg-borderLight text-white rounded-md"
-          >
-            Back to Jobs
+          <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md">
+            Post Job
           </button>
+          
         </div>
       </form>
     </div>
