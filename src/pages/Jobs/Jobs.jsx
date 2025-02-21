@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { databases, ID } from "../../appwriteConfig";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2 ,List,Plus} from "lucide-react";
 
 const Jobs = () => {
   const navigate = useNavigate();
@@ -96,7 +96,10 @@ const Jobs = () => {
   return (
     <div className="p-8 bg-bgDark min-h-screen">
       <div className="flex flex-wrap justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold text-primary">Job List</h1>
+      <h1 className="text-2xl font-semibold text-primary flex items-center gap-2">
+  <List size={28} className="text-primary" />
+  Job List
+</h1>
 
         {/* Filters & Actions */}
         <div className="flex flex-wrap space-x-2">
@@ -122,20 +125,23 @@ const Jobs = () => {
           </select>
 
           <button
-            onClick={() => navigate("/add-job")}
-            className="bg-green-500 border border-borderLight text-white px-3 py-1 rounded-md text-sm hover:bg-opacity-80 transition"
-          >
-            Add New Job
-          </button>
+  onClick={() => navigate("/add-job")}
+  className="bg-green-500 border border-borderLight text-white px-3 py-1 rounded-md text-sm hover:bg-opacity-80 transition flex items-center gap-2"
+>
+  <Plus size={20} />
+  Add New Job
+</button>
 
-          {selectedJobs.length > 0 && (
-            <button
-              onClick={handleDeleteSelected}
-              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition"
-            >
-              Delete Selected ({selectedJobs.length})
-            </button>
-          )}
+{selectedJobs.length > 0 && (
+  <button
+    onClick={handleDeleteSelected}
+    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition flex items-center gap-2"
+  >
+    <Trash2 size={20} />
+    Delete Selected ({selectedJobs.length})
+  </button>
+)}
+
         </div>
       </div>
 
@@ -189,7 +195,7 @@ const Jobs = () => {
                 <td className="p-3 text-center hidden sm:table-cell">{new Date(job.$createdAt).toLocaleDateString()}</td>
                 <td className="p-3 text-center hidden sm:table-cell">{new Date(job.End_date).toLocaleDateString()}</td>
                 <td className="p-3 text-center hidden sm:table-cell">{job.Vacancy}</td>
-                <td className="p-3 text-center">{job.postedBy}</td>
+                <td className="p-3 text-center">{job.postedBy||"Unknown"}</td>
                 <td className="p-3 text-center">
                   <span className={`px-3 py-1 rounded-md text-white ${job.status==="Active" ? "bg-green-500" : "bg-red-500"}`}>
                     {job.status}
