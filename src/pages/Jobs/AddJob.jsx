@@ -74,10 +74,10 @@ const AddJob = () => {
           Job Posted Successfully!
         </div>
       )}
-     
+
       <h2 className="text-2xl font-semibold text-primary mb-2">Post a New Job</h2>
       <form onSubmit={handleSubmit} className="bg-bgDark2 p-4 rounded-lg shadow-md w-full max-w-6xl">
-        
+
         {/* Job Information - 3 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
@@ -115,16 +115,25 @@ const AddJob = () => {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm mb-2">Description *</label>
-            <textarea
-              name="description"
-              value={job.description}
-              onChange={handleChange}
-              rows="2"
-              className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
-              required
-            ></textarea>
-          </div>
+  <label className="block text-sm mb-2">Description *</label>
+
+  {/* Character Counter */}
+  <p className="text-xs text-gray-400 mb-1">{job.description.length} / 1000</p>
+
+  <textarea
+    name="description"
+    value={job.description}
+    onChange={(e) => {
+      if (e.target.value.length <= 1000) {
+        handleChange(e);
+      }
+    }}
+    rows="2"
+    className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+    required
+  ></textarea>
+</div>
+
 
           <div>
             <label className="block text-sm mb-2">Employment Type *</label>
@@ -142,9 +151,9 @@ const AddJob = () => {
             </select>
           </div>
 
-          
 
-          
+
+
 
           <div>
             <label className="block text-sm mb-2">Industry*</label>
@@ -179,8 +188,10 @@ const AddJob = () => {
               onChange={handleChange}
               className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
               required
+              min={new Date().toISOString().split("T")[0]} // Prevent past dates
             />
           </div>
+
 
           <div>
             <label className="block text-sm mb-2">Skills*</label>
@@ -249,14 +260,14 @@ const AddJob = () => {
 
         {/* Buttons */}
         <div className="flex justify-between mt-6">
-        <button
+          <button
             type="button"
             onClick={() => navigate("/jobs")}
             className="px-4 py-2 bg-borderLight text-white rounded-md"
           >
             Back to Jobs
           </button>
-          
+
           <button
             type="button"
             onClick={() => setJob({})}
@@ -267,7 +278,7 @@ const AddJob = () => {
           <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md">
             Post Job
           </button>
-          
+
         </div>
       </form>
     </div>
