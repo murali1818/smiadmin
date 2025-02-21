@@ -115,24 +115,24 @@ const AddJob = () => {
             />
           </div>
           <div className="md:col-span-3">
-  <label className="block text-sm mb-2">Description *</label>
+            <label className="block text-sm mb-2">Description *</label>
 
-  {/* Character Counter */}
-  <p className="text-xs text-gray-400 mb-1">{job.description.length} / 1000</p>
+            {/* Character Counter */}
+            <p className="text-xs text-gray-400 mb-1">{job.description.length} / 1000</p>
 
-  <textarea
-    name="description"
-    value={job.description}
-    onChange={(e) => {
-      if (e.target.value.length <= 1000) {
-        handleChange(e);
-      }
-    }}
-    rows="2"
-    className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
-    required
-  ></textarea>
-</div>
+            <textarea
+              name="description"
+              value={job.description}
+              onChange={(e) => {
+                if (e.target.value.length <= 1000) {
+                  handleChange(e);
+                }
+              }}
+              rows="2"
+              className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              required
+            ></textarea>
+          </div>
 
 
           <div>
@@ -147,7 +147,7 @@ const AddJob = () => {
               <option value="">Select</option>
               <option value="Full-time">Full-time</option>
               <option value="Part-time">Part-time</option>
-              <option value="Project-based">Project-based</option>
+              <option value="Intern">Intern</option>
             </select>
           </div>
 
@@ -179,18 +179,20 @@ const AddJob = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm mb-2">End Date*</label>
+          <div className="relative">
+          <label className="block text-sm mb-2">End Date*</label>
             <input
               type="date"
               name="End_date"
               value={job.End_date}
               onChange={handleChange}
-              className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white"
+              className="peer w-full p-2 border border-borderLight rounded-md bg-bgDark text-white appearance-none"
               required
-              min={new Date().toISOString().split("T")[0]} // Prevent past dates
+              min={new Date().toISOString().split('T')[0]}
             />
+
           </div>
+
 
 
           <div>
@@ -229,7 +231,7 @@ const AddJob = () => {
               <option value="">Select</option>
               <option value="On-Site">On-Site</option>
               <option value="Hybrid">Hybrid</option>
-              <option value="TELECOMMUTE">Remote</option>
+              <option value="Remote">Remote</option>
             </select>
           </div>
 
@@ -259,11 +261,11 @@ const AddJob = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-end gap-4 mt-6">
           <button
             type="button"
             onClick={() => navigate("/jobs")}
-            className="px-4 py-2 bg-borderLight text-white rounded-md"
+            className="px-4 py-2 bg-borderLight 0 text-white rounded-md"
           >
             Back to Jobs
           </button>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
 import logo from "../../Images/smi.png";
 import {
   FaUserCircle,
@@ -16,7 +15,7 @@ import {
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logout } = useUser();
+
   return (
     <header className="bg-bgDark2 text-white shadow-md py-3 px-6 flex items-center justify-between">
       {/* Left Side: Logo */}
@@ -26,16 +25,7 @@ const Header = () => {
 
       {/* Center: Navigation (Desktop) */}
       <nav className="hidden md:flex space-x-8 text-lg font-medium">
-        <NavLink
-          to="/employee"
-          className={({ isActive }) =>
-            `flex items-center gap-2 px-3 py-2 rounded-md transition ${
-              isActive ? "text-primary border-2 border-primary" : "hover:text-primary"
-            }`
-          }
-        >
-          <FaUsers /> Employee
-        </NavLink>
+        
         <NavLink
           to="/jobs"
           className={({ isActive }) =>

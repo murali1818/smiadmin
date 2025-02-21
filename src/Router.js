@@ -7,6 +7,7 @@ import JobDetails from "./pages/Jobs/JobDetails";
 import EditJob from "./pages/Jobs/EditJob";
 import { useUser } from "./contexts/UserContext";
 import Logout from "./pages/header/Logout";
+import Loader from "./pages/header/Loader";
 
 const Router = () => {
   const { user, loading, refreshUser } = useUser(); 
@@ -19,9 +20,7 @@ const Router = () => {
 
   if (loading) {
     return (
-      <div className="no-user">
-        <p style={{ color: "white" }}>Loading...</p>   
-      </div>
+      <Loader />
     );
   }
 

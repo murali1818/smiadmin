@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { databases } from "../../appwriteConfig";
+import Loader from "../header/Loader";
 
 const JobDetails = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const JobDetails = () => {
     fetchJob();
   }, [id]);
 
-  if (loading) return <p className="text-center text-white">Loading...</p>;
+  if (loading) return <Loader/>
   if (!job) return <p className="text-center text-red-500">Job not found</p>;
 
   
