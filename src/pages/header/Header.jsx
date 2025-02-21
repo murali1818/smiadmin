@@ -30,7 +30,7 @@ const Header = () => {
           to="/employee"
           className={({ isActive }) =>
             `flex items-center gap-2 px-3 py-2 rounded-md transition ${
-              isActive ? "text-primary border-b-2 border-primary" : "hover:text-primary"
+              isActive ? "text-primary border-2 border-primary" : "hover:text-primary"
             }`
           }
         >
@@ -40,7 +40,7 @@ const Header = () => {
           to="/jobs"
           className={({ isActive }) =>
             `flex items-center gap-2 px-3 py-2 rounded-md transition ${
-              isActive ? "text-primary border-b-2 border-primary" : "hover:text-primary"
+              isActive ? "text-primary border-2 border-primary" : "hover:text-primary"
             }`
           }
         >
@@ -50,7 +50,7 @@ const Header = () => {
           to="/applications"
           className={({ isActive }) =>
             `flex items-center gap-2 px-3 py-2 rounded-md transition ${
-              isActive ? "text-primary border-b-2 border-primary" : "hover:text-primary"
+              isActive ? "text-primary border-2 border-primary" : "hover:text-primary"
             }`
           }
         >

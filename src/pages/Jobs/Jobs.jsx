@@ -1,35 +1,28 @@
-import React, { useState } from "react";
-import { FaEye, FaTrash } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { databases, ID } from "../../appwriteConfig";
+import { Eye, Trash2 } from "lucide-react";
 
 const Jobs = () => {
   const navigate = useNavigate();
 
   // Sample job data (20 jobs)
-  const initialJobs = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    position: `Job Position ${i + 1}`,
-    type: i % 2 === 0 ? "Full-Time" : "Part-Time",
-    postedDate: `12-01-2023`,
-    lastDate: `24-01-2023`,
-    closeDate: `25-01-2023`,
-    status: i % 3 === 0 ? "InActive" : "Active",
-  }));
 
-  const [jobs, setJobs] = useState(initialJobs);
+  const [jobs, setJobs] = useState([]);
   const [selectedJobs, setSelectedJobs] = useState([]);
   const [filters, setFilters] = useState({ type: "", status: "" });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteMode, setDeleteMode] = useState(""); // "single" or "multiple"
+  const [deleteMode, setDeleteMode] = useState("");
   const [jobToDelete, setJobToDelete] = useState(null);
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
+  // console.log(jobs);
+
   const totalPages = Math.ceil(jobs.length / jobsPerPage);
 
   // Handle checkbox selection
   const handleCheckboxChange = (id) => {
+
     setSelectedJobs((prev) =>
       prev.includes(id) ? prev.filter((jobId) => jobId !== id) : [...prev, id]
     );
@@ -48,15 +41,24 @@ const Jobs = () => {
   };
 
   // Confirm delete action
-  const confirmDelete = () => {
-    if (deleteMode === "single") {
-      setJobs(jobs.filter((job) => job.id !== jobToDelete));
-    } else if (deleteMode === "multiple") {
-      setJobs(jobs.filter((job) => !selectedJobs.includes(job.id)));
-      setSelectedJobs([]);
+  const confirmDelete = async () => {
+    try {
+      if (deleteMode === "single") {
+        await databases.deleteDocument("67b6d0580007f3db3feb", "67b6d0b30023f2b445b2", jobToDelete);
+        setJobs(jobs.filter((job) => job.$id !== jobToDelete));
+      } else if (deleteMode === "multiple") {
+        for (const jobId of selectedJobs) {
+          await databases.deleteDocument("67b6d0580007f3db3feb", "67b6d0b30023f2b445b2", jobId);
+        }
+        setJobs(jobs.filter((job) => !selectedJobs.includes(job.$id)));
+        setSelectedJobs([]);
+      }
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      console.error("Error deleting jobs:", error);
     }
-    setShowDeleteConfirm(false);
   };
+
 
   // Handle filter change
   const handleFilterChange = (e) => {
@@ -66,7 +68,7 @@ const Jobs = () => {
   // Filter jobs based on dropdowns
   const filteredJobs = jobs.filter((job) => {
     return (
-      (filters.type ? job.type === filters.type : true) &&
+      (filters.type ? job.employmentType=== filters.type : true) &&
       (filters.status ? job.status === filters.status : true)
     );
   });
@@ -75,6 +77,21 @@ const Jobs = () => {
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await databases.listDocuments("67b6d0580007f3db3feb", "67b6d0b30023f2b445b2");
+        setJobs(response.documents);
+        console.log(response.documents);
+
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+    fetchJobs();
+  }, []);
 
   return (
     <div className="p-8 bg-bgDark min-h-screen">
@@ -86,17 +103,18 @@ const Jobs = () => {
           <select
             name="type"
             onChange={handleFilterChange}
-            className="p-2 border border-borderLight bg-bgDark2 text-white rounded"
+            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md"
           >
             <option value="">All Types</option>
-            <option value="Full-Time">Full-Time</option>
-            <option value="Part-Time">Part-Time</option>
+            <option value="Full-time">Full-Time</option>
+            <option value="Part-time">Part-Time</option>
+            <option value="intern">InternShip</option>
           </select>
 
           <select
             name="status"
             onChange={handleFilterChange}
-            className="p-2 border border-borderLight bg-bgDark2 text-white rounded"
+            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md"
           >
             <option value="">All Status</option>
             <option value="Active">Active</option>
@@ -105,7 +123,7 @@ const Jobs = () => {
 
           <button
             onClick={() => navigate("/add-job")}
-            className="bg-green-500 border border-borderLight text-white px-3 py-1 rounded text-sm hover:bg-opacity-80 transition"
+            className="bg-green-500 border border-borderLight text-white px-3 py-1 rounded-md text-sm hover:bg-opacity-80 transition"
           >
             Add New Job
           </button>
@@ -122,16 +140,17 @@ const Jobs = () => {
       </div>
 
       {/* Job Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse rounded-lg shadow bg-bgDark2 text-white border border-borderLight ">
+      <div className="w-full overflow-x-auto border border-borderLight rounded-lg shadow bg-bgDark2">
+        <table className="w-full border-collapse rounded-md shadow bg-bgDark2 text-white border border-borderLight overflow-hidden">
           <thead>
-            <tr className="bg-primary text-white rounded-lg">
+            <tr className="bg-primary text-white">
               <th className="p-2">
                 <input
                   type="checkbox"
+                 className="custom-checkbox w-5 h-5 border-2 border-gray-800 rounded-md appearance-none cursor-pointer"
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedJobs(currentJobs.map((job) => job.id));
+                      setSelectedJobs(currentJobs.map((job) => job.$id));
                     } else {
                       setSelectedJobs([]);
                     }
@@ -139,43 +158,46 @@ const Jobs = () => {
                   checked={selectedJobs.length === currentJobs.length}
                 />
               </th>
-              <th className="p-2">No</th>
-              <th className="p-2">Position</th>
-              <th className="p-2">Type</th>
-              <th className="p-2 hidden sm:table-cell">Posted Date</th>
-              <th className="p-2 hidden sm:table-cell">Last Date</th>
-              <th className="p-2 hidden sm:table-cell">Close Date</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Actions</th>
+              <th className="p-3 text-center">No</th>
+              <th className="p-3 text-center">Position</th>
+              <th className="p-3 text-center">Type</th>
+              <th className="p-3 text-center hidden sm:table-cell">Posted Date</th>
+              <th className="p-3 text-center hidden sm:table-cell">Last Date</th>
+              <th className="p-3 text-center hidden sm:table-cell">Vacancy</th>
+              <th className="p-3 text-center">Status</th>
+              <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentJobs.map((job, index) => (
-              <tr key={job.id} className="border-t border-borderLight">
+              <tr key={job.$id} className="border-t border-borderLight bg-bgDark2 hover:bg-bgDark rounded-2xl">
                 <td className="p-2 text-center">
                   <input
                     type="checkbox"
-                    checked={selectedJobs.includes(job.id)}
-                    onChange={() => handleCheckboxChange(job.id)}
+                    checked={selectedJobs.includes(job.$id)}
+                    onChange={() => handleCheckboxChange(job.$id)}
+                    className="custom-checkbox w-5 h-5 border-2 border-gray-400 rounded-md appearance-none cursor-pointer"
                   />
                 </td>
-                <td className="p-2 text-center">{indexOfFirstJob + index + 1}</td>
-                <td className="p-2 text-center">{job.position}</td>
-                <td className="p-2 text-center">{job.type}</td>
-                <td className="p-2 text-center hidden sm:table-cell">{job.postedDate}</td>
-                <td className="p-2 text-center hidden sm:table-cell">{job.lastDate}</td>
-                <td className="p-2 text-center hidden sm:table-cell">{job.closeDate}</td>
-                <td className="p-2 text-center">
-                  <span className={`px-2 py-1 rounded ${job.status === "Active" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
+
+
+                <td className="p-3 text-center">{index + 1}</td>
+                <td className="p-3 text-center">{job.jobTitle}</td>
+                <td className="p-3 text-center">{job.employmentType}</td>
+                <td className="p-3 text-center hidden sm:table-cell">{new Date(job.$createdAt).toLocaleDateString()}</td>
+                <td className="p-3 text-center hidden sm:table-cell">{new Date(job.End_date).toLocaleDateString()}</td>
+                <td className="p-3 text-center hidden sm:table-cell">{job.Vacancy}</td>
+                <td className="p-3 text-center">
+                  <span className={`px-3 py-1 rounded-md text-white ${job.status==="Active" ? "bg-green-500" : "bg-red-500"}`}>
                     {job.status}
                   </span>
                 </td>
-                <td className="p-2 flex justify-center space-x-2">
-                  <button className="text-green-400 hover:text-green-300" onClick={() => navigate(`/job-details/${job.id}`)}>
-                    <FaEye />
+                <td className="p-3 flex gap-2 justify-center">
+                  <button className="text-green-400 hover:text-green-300" onClick={() => navigate(`/job-details/${job.$id}`)}>
+                    <Eye size={20} />
                   </button>
-                  <button className="text-red-500 hover:text-red-400" onClick={() => handleDeleteClick(job.id)}>
-                    <FaTrash />
+                  <button className="text-red-500 hover:text-red-400" onClick={() => handleDeleteClick(job.$id)}>
+                    <Trash2 size={20} />
                   </button>
                 </td>
               </tr>
@@ -183,11 +205,13 @@ const Jobs = () => {
           </tbody>
         </table>
       </div>
+
+
       <div className="flex justify-center mt-8 space-x-2">
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
-          className={`px-4 py-2 text-sm rounded ${currentPage === 1 ? "bg-gray-500 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+          className={`px-4 py-2 text-sm rounded-md ${currentPage === 1 ? "bg-gray-500 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
         >
           Prev
         </button>
@@ -195,7 +219,7 @@ const Jobs = () => {
         <button
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
-          className={`px-4 py-2 text-sm rounded ${currentPage === totalPages ? "bg-gray-500 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+          className={`px-4 py-2 text-sm rounded-md ${currentPage === totalPages ? "bg-gray-500 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
         >
           Next
         </button>

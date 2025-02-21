@@ -34,12 +34,23 @@ const JobDetails = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-primary">{job.title}</h2>
+          <div className="flex justify-between gap-5 " >
+          <button
+            type="button"
+            onClick={() => navigate("/jobs")}
+            className="px-4 py-2 bg-borderLight text-white rounded-md"
+          >
+            Back to Jobs
+          </button>
           <button
             onClick={() => navigate(`/edit-job/${job.id}`)}
             className="px-4 py-2 bg-secondary text-white rounded-md"
           >
             Edit Job
           </button>
+          </div>
+          
+          
         </div>
 
         {/* Job Details Section */}
