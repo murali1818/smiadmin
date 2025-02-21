@@ -164,8 +164,10 @@ const Jobs = () => {
               <th className="p-3 text-center hidden sm:table-cell">Posted Date</th>
               <th className="p-3 text-center hidden sm:table-cell">Last Date</th>
               <th className="p-3 text-center hidden sm:table-cell">Vacancy</th>
+              <th className="p-3 text-center">Created By</th>
               <th className="p-3 text-center">Status</th>
               <th className="p-3 text-center">Actions</th>
+    
             </tr>
           </thead>
           <tbody>
@@ -187,6 +189,7 @@ const Jobs = () => {
                 <td className="p-3 text-center hidden sm:table-cell">{new Date(job.$createdAt).toLocaleDateString()}</td>
                 <td className="p-3 text-center hidden sm:table-cell">{new Date(job.End_date).toLocaleDateString()}</td>
                 <td className="p-3 text-center hidden sm:table-cell">{job.Vacancy}</td>
+                <td className="p-3 text-center">{job.postedBy}</td>
                 <td className="p-3 text-center">
                   <span className={`px-3 py-1 rounded-md text-white ${job.status==="Active" ? "bg-green-500" : "bg-red-500"}`}>
                     {job.status}
