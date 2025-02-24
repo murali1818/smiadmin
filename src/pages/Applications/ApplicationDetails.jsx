@@ -81,16 +81,20 @@ const ApplicationDetails = () => {
         <div className="mt-4">
           <h3 className="text-lg font-semibold border-b pb-2 text-gray-100">Description</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 text-gray-100">
+          <p><strong>Phone:</strong> {application.phone}</p>
+          <p><strong>Gender:</strong> {application.gender}</p>
+          <p><strong>Date of Birth:</strong> {new Date(application.dateOfBirth).toLocaleDateString()}</p>
             <p><strong>Experience:</strong> {application.experience} years</p>
             <p><strong>Qualification:</strong> {application.qualification}</p>
+            <p><strong>Languages:</strong><span className="break-words">  {application.languages}</span></p>
             <p><strong>Current CTC:</strong> {application.currentCTC || "N/A"}</p>
             <p><strong>Expected CTC:</strong> {application.expectedCTC || "N/A"}</p>
-            <p><strong>Key Skills:</strong> {application.keySkills.join(", ")}</p>
-            <p><strong>Languages:</strong> {application.languages}</p>
-            <p><strong>Phone:</strong> {application.phone}</p>
-            <p><strong>Gender:</strong> {application.gender}</p>
-            <p><strong>Date of Birth:</strong> {new Date(application.dateOfBirth).toLocaleDateString()}</p>
-            <p><strong>Current Address:</strong> {application.currentAddress}</p>
+           
+            <p><strong>Key Skills:</strong> <span className="break-words"> {application.keySkills.join(", ")}</span></p>
+           
+          
+            
+            <p><strong>Current Address:</strong> <span className="break-words">{application.currentAddress}</span></p>
             <p><strong>Permanent Address:</strong> <span className="break-words">{application.permanentAddress}</span></p>
             <p><strong>Reason for Interest:</strong> <span className="break-words">{application.whyInterested}</span></p>
             <p><strong>Applied At:</strong> {new Date(application.appliedAt).toLocaleString()}</p>
