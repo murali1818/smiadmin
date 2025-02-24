@@ -61,20 +61,16 @@ const Header = () => {
 
           {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute right-0 mt-3 w-48 bg-bgDark border border-borderLight rounded-md shadow-lg z-50">
+            <div className="absolute right-0 mt-3 w-52 bg-bgDark border border-borderLight rounded-md shadow-lg z-50">
               <ul className="py-2 text-sm text-white">
               <NavLink to="/profile" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <li className="px-4 py-2 flex items-center gap-2 hover:bg-borderLight cursor-pointer">
+                <li className="px-4 py-2 flex items-center gap-2 hover:bg-borderLight cursor-pointer text-lg">
                 <FaUserCircle /> Profile
                 </li>
                 </NavLink > 
-                <NavLink to="/settings" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <li className="px-4 py-2 flex items-center gap-2 hover:bg-borderLight cursor-pointer">
-                 <FaCog /> Settings
-                </li>
-                </NavLink>
+                
                 <NavLink to="/logout" >
-                <li className="px-4 py-2 flex items-center gap-2 hover:bg-secondary cursor-pointer text-primary">
+                <li className="px-4 py-2 flex items-center gap-2 hover:bg-secondary cursor-pointer text-primary text-lg">
                   <FaSignOutAlt /> Logout
                 </li>
                 </NavLink>
@@ -94,14 +90,8 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-14 right-0 w-full  bg-bgDark2  border-t-2 text-white flex flex-col items-right space-y-4 py-6 shadow-md md:hidden">
-          <NavLink
-            to="/employee"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 text-lg  px-4 py-2 hover:text-primary transition bgDark"
-          >
-            <FaUsers /> Employee
-          </NavLink>
+        <div className="absolute top-14 right-0 w-full  bg-bgDark2  border-t-2 text-white flex flex-col items-right space-y-4 py-6 shadow-md md:hidden z-50">
+          
           <NavLink
             to="/jobs"
             onClick={() => setMobileMenuOpen(false)}

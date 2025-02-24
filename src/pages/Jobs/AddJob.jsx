@@ -115,10 +115,13 @@ const AddJob = () => {
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm mb-2">Description *</label>
+            <div className="flex justify-between items-center">
+            <label className="block text-sm mb-2 flex">Description *</label>
+            <p className="text-xs text-gray-400 mb-1">{job.description.length} / 1000</p>
+            </div>
 
             {/* Character Counter */}
-            <p className="text-xs text-gray-400 mb-1">{job.description.length} / 1000</p>
+           
 
             <textarea
               name="description"

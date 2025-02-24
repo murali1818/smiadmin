@@ -214,7 +214,7 @@ const EditJob = () => {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm mb-2">Description *</label>
-              <textarea name="description" value={job.description} onChange={handleChange} rows="4" className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white" required></textarea>
+              <textarea name="description" value={job.description} onChange={handleChange} rows="1" className="w-full p-2 border border-borderLight rounded-md bg-bgDark text-white" required></textarea>
             </div>
 
             {/* Working Hours */}
@@ -237,9 +237,9 @@ const EditJob = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-end gap-5 mt-6">
+          <div className="flex justify-end gap-5 mt-4">
             
-            <button type="button" onClick={() => navigate(`/job-details/${id}`)} className="px-4 py-2 bg-secondary text-white rounded-md">
+            <button type="button" onClick={() => navigate(-1)} className="px-4 py-2 bg-secondary text-white rounded-md">
               Cancel
             </button>
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md">

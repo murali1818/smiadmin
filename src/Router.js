@@ -8,6 +8,10 @@ import EditJob from "./pages/Jobs/EditJob";
 import { useUser } from "./contexts/UserContext";
 import Logout from "./pages/header/Logout";
 import Loader from "./pages/header/Loader";
+import AllApplications from "./pages/Applications/Allapllications";
+import JobApplications from "./pages/Applications/JobApplications";
+import ApplicationDetails from "./pages/Applications/ApplicationDetails";
+import Profile from "./pages/header/Profile";
 
 const Router = () => {
   const { user, loading, refreshUser } = useUser(); 
@@ -50,6 +54,12 @@ const Router = () => {
         <Route path="/job-details/:id" element={<JobDetails />} />
         <Route path="/edit-job/:id" element={<EditJob />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/applications" element={<AllApplications />} />
+        <Route path="/job/:jobId/applications" element={<JobApplications />} />
+        <Route path="/application-details/:applicationId" element={<ApplicationDetails />} /> 
+        <Route path="/profile" element={<Profile></Profile>}/>
+        <Route path="/*" element={() => navigate("/")} />
+
       </Routes>
     </div>
   );

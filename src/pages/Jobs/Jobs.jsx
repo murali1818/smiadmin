@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { databases } from "../../appwriteConfig";
-import { Eye, Trash2, List, Plus, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { Eye, Trash2, List, Plus, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Search } from "lucide-react";
 
 import { useUser } from "../../contexts/UserContext";
 import Loader from "../header/Loader";
@@ -18,6 +18,7 @@ const Jobs = () => {
   const [deleteMode, setDeleteMode] = useState("");
   const [jobToDelete, setJobToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(""); // Search input state
   const jobsPerPage = 10;
   const { loading } = useUser();
   // console.log(jobs);
@@ -72,6 +73,7 @@ const Jobs = () => {
   // Filter jobs based on dropdowns
   const filteredJobs = jobs.filter((job) => {
     return (
+      job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (filters.type ? job.employmentType === filters.type : true) &&
       (filters.status ? job.status === filters.status : true)
     );
@@ -99,24 +101,39 @@ const Jobs = () => {
 
   if (loading) {
     return (
-      <Loader/>
+      <Loader />
     );
   }
 
   return (
     <div className="p-8 bg-bgDark min-h-screen">
       <div className="flex flex-wrap justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold text-primary flex items-center gap-2">
+        {/* Title */}
+        <h1 className="text-2xl font-semibold text-primary flex items-center gap-2 md:mb-0 mb-2">
           <List size={28} className="text-primary" />
           Job List
         </h1>
 
         {/* Filters & Actions */}
-        <div className="flex flex-wrap space-x-2">
+        <div className="flex flex-col md:flex-row lg:flex-nowrap flex-wrap gap-2 md:gap-4 lg:gap-2 w-full md:w-auto justify-end md:mt-0">
+
+          {/* Search Input */}
+          <div className="relative w-full md:w-64">
+            <input
+              type="text"
+              placeholder="Search job position..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 pl-10 border border-borderLight bg-bgDark2 text-white rounded-md focus:outline-none w-full"
+            />
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+          </div>
+
+          {/* Job Type Filter */}
           <select
             name="type"
             onChange={handleFilterChange}
-            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md"
+            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md w-full md:w-auto"
           >
             <option value="">All Types</option>
             <option value="Full-time">Full-Time</option>
@@ -124,39 +141,42 @@ const Jobs = () => {
             <option value="Intern">Intern</option>
           </select>
 
+          {/* Job Status Filter */}
           <select
             name="status"
             onChange={handleFilterChange}
-            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md"
+            className="p-2 border border-borderLight bg-bgDark2 text-white rounded-md w-full md:w-auto"
           >
             <option value="">All Status</option>
             <option value="Active">Active</option>
-            <option value="Inactive">InActive</option>
+            <option value="Inactive">Inactive</option>
           </select>
 
+          {/* Add Job Button */}
           <button
             onClick={() => navigate("/add-job")}
-            className="bg-green-500 border border-borderLight text-white px-3 py-1 rounded-md text-sm hover:bg-opacity-80 transition flex items-center gap-2"
+            className="bg-green-500 border border-borderLight text-white px-3 py-2 rounded-md text-md hover:bg-opacity-80 transition flex items-center gap-2 w-full md:w-auto"
           >
             <Plus size={20} />
             Add New Job
           </button>
 
+          {/* Delete Selected Button */}
           {selectedJobs.length > 1 && (
             <button
               onClick={handleDeleteSelected}
-              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition flex items-center gap-2"
+              className="bg-red-500 text-white px-3 py-2 rounded-md text-md hover:bg-red-600 transition flex items-center gap-2 w-full md:w-auto"
             >
               <Trash2 size={20} />
               Delete Selected ({selectedJobs.length})
             </button>
           )}
-
         </div>
       </div>
 
+
       {/* Job Table */}
-      {currentJobs &&currentJobs.length > 0 ?(
+      {currentJobs && currentJobs.length > 0 ? (
         <div>
           <div className="w-full overflow-x-auto border border-borderLight rounded-lg shadow bg-bgDark2">
             <table className="w-full border-collapse rounded-md shadow bg-bgDark2 text-white border border-borderLight overflow-hidden">
@@ -226,50 +246,60 @@ const Jobs = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className="flex flex-wrap justify-center mt-4 gap-2 md:gap-2 w-full">
             {/* First Page Button */}
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(1)}
-              className={`px-4 py-2 text-sm rounded-md flex items-center ${currentPage === 1 ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+              className={`px-4 py-2 text-sm rounded-md flex items-center min-w-[40px] justify-center 
+      ${currentPage === 1 ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
             >
-              <ChevronsLeft size={20} />
+              <ChevronsLeft size={20} className="text-white" />
             </button>
 
-            {/* Previous Page Button */}
+            {/* Previous Page Button (Icon Only on Mobile) */}
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className={`px-4 py-2 text-sm rounded-md flex items-center ${currentPage === 1 ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+              className={`px-4 py-2 text-md rounded-md flex items-center min-w-[40px] justify-center 
+      ${currentPage === 1 ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
             >
-              <ChevronLeft size={20} className="mr-1" /> Prev
+              <ChevronLeft size={20} className="text-white" />
+              <span className="hidden md:inline">Prev</span>
             </button>
 
             {/* Current Page Display */}
-            <span className="text-md font-semibold text-white">{currentPage} / {totalPages}</span>
+            <span className="text-md font-semibold text-white px-4 py-2 min-w-[60px] text-center">
+              {currentPage} / {totalPages}
+            </span>
 
-            {/* Next Page Button */}
+            {/* Next Page Button (Icon Only on Mobile) */}
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className={`px-4 py-2 text-sm rounded-md flex items-center ${currentPage === totalPages ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+              className={`px-4 py-2 text-md rounded-md flex items-center min-w-[40px] justify-center 
+      ${currentPage === totalPages ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
             >
-              Next <ChevronRight size={20} className="ml-1" />
+              <span className="hidden md:inline">Next</span>
+              <ChevronRight size={20} className="text-white" />
             </button>
 
             {/* Last Page Button */}
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(totalPages)}
-              className={`px-4 py-2 text-sm rounded-md flex items-center ${currentPage === totalPages ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
+              className={`px-4 py-2 text-sm rounded-md flex items-center min-w-[40px] justify-center 
+      ${currentPage === totalPages ? "border border-borderLight bg-bgDark2 cursor-not-allowed text-white" : "bg-primary hover:bg-opacity-80 text-white"}`}
             >
-              <ChevronsRight size={20} />
+              <ChevronsRight size={20} className="text-white" />
             </button>
           </div>
+
+
         </div>
 
-      ):(
-        <p className="text-white text-center mt-4">Jobs not available</p>
+      ) : (
+        <p className="text-white text-center mt-4">Jobs Not Found</p>
       )}
 
 
