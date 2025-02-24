@@ -85,7 +85,7 @@ const ApplicationDetails = () => {
           <p><strong>Gender:</strong> {application.gender}</p>
           <p><strong>Date of Birth:</strong> {new Date(application.dateOfBirth).toLocaleDateString()}</p>
             <p><strong>Experience:</strong> {application.experience} years</p>
-            <p><strong>Qualification:</strong> {application.qualification}</p>
+            <p><strong>Qualification:</strong><span className="break-words">  {application.qualification}</span></p>
             <p><strong>Languages:</strong><span className="break-words">  {application.languages}</span></p>
             <p><strong>Current CTC:</strong> {application.currentCTC || "N/A"}</p>
             <p><strong>Expected CTC:</strong> {application.expectedCTC || "N/A"}</p>
