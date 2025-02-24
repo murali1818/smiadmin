@@ -13,12 +13,9 @@ const Logout = () => {
       try {
         await account.deleteSession("current"); // Logout from Appwrite
         setUser(null); // Clear user context
-        setMessage("Logout successful! Redirecting...");
+        setMessage("Logout successful! Redirecting...")
+        navigate("/"); 
 
-        // Redirect after 2 seconds
-        setTimeout(() => {
-          navigate("/"); 
-        }, 2000);
       } catch (error) {
         console.error("Logout failed:", error);
         setMessage("Logout failed. Please try again.");
